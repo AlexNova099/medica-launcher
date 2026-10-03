@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Opening in Obsidian — Medica Praxis</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0d1117;
+      color: #c9d1d9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    .card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 2rem 2.5rem;
+      max-width: 560px;
+      width: 100%;
+      text-align: center;
+    }
+    .icon { font-size: 3rem; margin-bottom: 1rem; }
+    h1 { font-size: 1.25rem; color: #f0f6fc; margin-bottom: 0.5rem; }
+    p  { color: #8b949e; font-size: 0.9rem; margin-bottom: 1.25rem; line-height: 1.5; }
+    .uri {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 0.6rem 1rem;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.78rem;
+      color: #79c0ff;
+      word-break: break-all;
+      text-align: left;
+      margin-bottom: 1.25rem;
+    }
+    .btn {
+      display: inline-block;
+      background: #238636;
+      color: #f0f6fc;
+      border: none;
+      border-radius: 6px;
+      padding: 0.6rem 1.4rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .btn:hover { background: #2ea043; }
+    .btn-adv {
+      background: #1f6feb;
+      margin-left: 0.5rem;
+    }
+    .btn-adv:hover { background: #388bfd; }
+    .note { font-size: 0.78rem; color: #6e7681; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="icon">🗺️</div>
+  <h1 id="title">Opening note in Obsidian…</h1>
+  <p id="subtitle">Redirecting you to the <strong>Medica Praxis</strong> vault.</p>
+  <div class="uri" id="uri-display">Building URI…</div>
+  <div>
+    <a class="btn" id="btn-open" href="#">📂 Open in Obsidian</a>
+    <a class="btn btn-adv" id="btn-adv" href="#">🔌 Advanced URI</a>
+  </div>
+  <p class="note">
+    If Obsidian does not open automatically, click one of the buttons above.<br>
+    Obsidian must be installed and the vault <code>Medica_Praxis</code> must be loaded.
+  </p>
+</div>
+
+<script>
+  (function () {
+    const params   = new URLSearchParams(window.location.search);
+    const vault    = params.get('vault')    || 'Medica_Praxis';
+    const file     = params.get('file')     || '';   // for obsidian://open
+    const filepath = params.get('filepath') || (file ? file + '.md' : '');
+
+    // Standard URI
+    const stdURI  = file
+      ? `obsidian://open?vault=${encodeURIComponent(vault)}&file=${encodeURIComponent(file)}`
+      : null;
+
+    // Advanced URI
+    const advURI  = filepath
+      ? `obsidian://advanced-uri?vault=${encodeURIComponent(vault)}&filepath=${encodeURIComponent(filepath)}`
+      : null;
+
+    const displayURI = stdURI || advURI || 'No file parameter supplied.';
+    document.getElementById('uri-display').textContent = displayURI;
+
+    if (file) {
+      const parts = file.split('/');
+      document.getElementById('title').textContent =
+        'Opening: ' + parts[parts.length - 1];
+    }
+
+    if (stdURI) {
+      document.getElementById('btn-open').href = stdURI;
+    } else {
+      document.getElementById('btn-open').style.display = 'none';
+    }
+
+    if (advURI) {
+      document.getElementById('btn-adv').href = advURI;
+    } else {
+      document.getElementById('btn-adv').style.display = 'none';
+    }
+
+    // Auto-redirect on load (standard URI preferred)
+    const autoURI = stdURI || advURI;
+    if (autoURI) {
+      setTimeout(function () {
+        window.location.href = autoURI;
+      }, 600);
+    }
+  })();
+</script>
+</body>
+</html>
